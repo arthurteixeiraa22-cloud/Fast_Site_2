@@ -25,34 +25,34 @@ Projeto com Spring Boot e MySQL. Tem uma tela de login para o administrador, uma
 
 | Arquivo | Descrição |
 |---|---|
-| [pom.xml](pom.xml) | Configuração do Maven e dependências do projeto |
-| [schema.sql](schema.sql) | Cria o banco `meu_db` e as tabelas `usuarios` e `cadastros` |
-| [LEIA-ME.md](LEIA-ME.md) | Instruções detalhadas de execução e teste |
+| [pom.xml](demo/pom.xml) | Configuração do Maven e dependências do projeto |
+| [schema.sql](demo/schema.sql) | Cria o banco `meu_db` e as tabelas `usuarios` e `cadastros` |
+| [LEIA-ME.md](demo/LEIA-ME.md) | Instruções detalhadas de execução e teste |
 
 ### Código Java (`src/main/java/com/example/demo/`)
 
 | Arquivo | Descrição |
 |---|---|
-| [DemoApplication.java](src/main/java/com/example/demo/DemoApplication.java) | Classe principal que inicia o servidor Spring Boot |
-| [ConexaoDB.java](src/main/java/com/example/demo/ConexaoDB.java) | URL, usuário e senha do MySQL. É o único lugar com essa configuração |
-| [SenhaUtil.java](src/main/java/com/example/demo/SenhaUtil.java) | Criptografia BCrypt: gerar o hash e conferir a senha |
-| [UsuarioDAO.java](src/main/java/com/example/demo/UsuarioDAO.java) | Acesso à tabela `usuarios` (login do administrador) |
-| [LoginController.java](src/main/java/com/example/demo/LoginController.java) | Endpoints `/login`, `/usuario` e `/logout` |
-| [Cadastro.java](src/main/java/com/example/demo/Cadastro.java) | Dados de um cliente que voltam para a tela. Não inclui a senha |
-| [CadastroRequest.java](src/main/java/com/example/demo/CadastroRequest.java) | Dados que a tela de cadastro envia, incluindo a senha pura |
-| [CadastroDAO.java](src/main/java/com/example/demo/CadastroDAO.java) | Acesso à tabela `cadastros`: salvar, listar e buscar |
-| [CadastroController.java](src/main/java/com/example/demo/CadastroController.java) | Endpoints `/cadastros`, `/cadastros/{id}` e `/cadastros/busca` |
-| [GerarHash.java](src/main/java/com/example/demo/GerarHash.java) | Utilitário temporário que gera o `INSERT` do primeiro administrador |
+| [DemoApplication.java](demo/src/main/java/com/example/demo/DemoApplication.java) | Classe principal que inicia o servidor Spring Boot |
+| [ConexaoDB.java](demo/src/main/java/com/example/demo/ConexaoDB.java) | URL, usuário e senha do MySQL. É o único lugar com essa configuração |
+| [SenhaUtil.java](demo/src/main/java/com/example/demo/SenhaUtil.java) | Criptografia BCrypt: gerar o hash e conferir a senha |
+| [UsuarioDAO.java](demo/src/main/java/com/example/demo/UsuarioDAO.java) | Acesso à tabela `usuarios` (login do administrador) |
+| [LoginController.java](demo/src/main/java/com/example/demo/LoginController.java) | Endpoints `/login`, `/usuario` e `/logout` |
+| [Cadastro.java](demo/src/main/java/com/example/demo/Cadastro.java) | Dados de um cliente que voltam para a tela. Não inclui a senha |
+| [CadastroRequest.java](demo/src/main/java/com/example/demo/CadastroRequest.java) | Dados que a tela de cadastro envia, incluindo a senha pura |
+| [CadastroDAO.java](demo/src/main/java/com/example/demo/CadastroDAO.java) | Acesso à tabela `cadastros`: salvar, listar e buscar |
+| [CadastroController.java](demo/src/main/java/com/example/demo/CadastroController.java) | Endpoints `/cadastros`, `/cadastros/{id}` e `/cadastros/busca` |
+| [GerarHash.java](demo/src/main/java/com/example/demo/GerarHash.java) | Utilitário temporário que gera o `INSERT` do primeiro administrador |
 
 ### Telas (`src/main/resources/static/`)
 
 | Arquivo | Descrição |
 |---|---|
-| [index.html](src/main/resources/static/index.html) | Redireciona para a tela de login |
-| [criptografia.html](src/main/resources/static/criptografia.html) | Tela de login, com link para o cadastro público |
-| [novo-cadastro.html](src/main/resources/static/novo-cadastro.html) | Formulário público de cadastro de cliente |
-| [cadastro.html](src/main/resources/static/cadastro.html) | Tela administrativa: lista e busca de clientes |
-| [style.css](src/main/resources/static/style.css) | Tema escuro compartilhado pelas telas |
+| [index.html](demo/src/main/resources/static/index.html) | Redireciona para a tela de login |
+| [criptografia.html](demo/src/main/resources/static/criptografia.html) | Tela de login, com link para o cadastro público |
+| [novo-cadastro.html](demo/src/main/resources/static/novo-cadastro.html) | Formulário público de cadastro de cliente |
+| [cadastro.html](demo/src/main/resources/static/cadastro.html) | Tela administrativa: lista e busca de clientes |
+| [style.css](demo/src/main/resources/static/style.css) | Tema escuro compartilhado pelas telas |
 
 > Os caminhos seguem o padrão do Maven e do Spring Boot. Se seus arquivos estiverem em outra pasta, ajuste os links.
 
@@ -79,7 +79,7 @@ Projeto com Spring Boot e MySQL. Tem uma tela de login para o administrador, uma
 
 ## Banco de dados
 
-O [schema.sql](schema.sql) cria duas tabelas no banco `meu_db`:
+O [schema.sql](demo/schema.sql) cria duas tabelas no banco `meu_db`:
 
 - **`usuarios`**: administradores que podem fazer login (`email`, `senha_hash`).
 - **`cadastros`**: clientes cadastrados pela tela pública (nome, endereço, CEP, número, telefone, observação, e-mail, `senha_hash` e data de criação).
@@ -90,19 +90,19 @@ A senha nunca é salva em texto puro, e o campo de senha não aparece nas consul
 
 ### 1. Criar o banco de dados
 
-Execute o [schema.sql](schema.sql) no MySQL (Workbench, DBeaver ou terminal).
+Execute o [schema.sql](demo/schema.sql) no MySQL (Workbench, DBeaver ou terminal).
 
 ### 2. Configurar a conexão
 
-Em [ConexaoDB.java](src/main/java/com/example/demo/ConexaoDB.java), coloque a senha do seu MySQL no campo `PASS`.
+Em [ConexaoDB.java](demo/src/main/java/com/example/demo/ConexaoDB.java), coloque a senha do seu MySQL no campo `PASS`.
 
 ### 3. Criar o administrador
 
-Edite e-mail e senha em [GerarHash.java](src/main/java/com/example/demo/GerarHash.java) e execute a classe. Ela imprime um `INSERT` no console. Copie esse comando e execute no MySQL. Esse é o usuário que acessa a tela administrativa.
+Edite e-mail e senha em [GerarHash.java](demo/src/main/java/com/example/demo/GerarHash.java) e execute a classe. Ela imprime um `INSERT` no console. Copie esse comando e execute no MySQL. Esse é o usuário que acessa a tela administrativa.
 
 ### 4. Iniciar o servidor
 
-Execute a classe [DemoApplication.java](src/main/java/com/example/demo/DemoApplication.java), ou rode `mvn spring-boot:run` na raiz do projeto.
+Execute a classe [DemoApplication.java](demo/src/main/java/com/example/demo/DemoApplication.java), ou rode `mvn spring-boot:run` na raiz do projeto.
 
 ### 5. Acessar o sistema
 
