@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<!-- TELA DO CLIENTE: BEM-VINDO (endereço: http://localhost:8081/bem-vindo.html) -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bem-vindo</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="oculto">
+    <header class="topo">
+        <strong>Arthur Martins Teixeira Coragem</strong>
+        <div>
+            <span class="usuario" id="emailLogado"></span>
+            <button class="secundario" id="btnSair">Sair</button>
+        </div>
+    </header>
+
+    <main class="conteudo conteudo-estreito">
+        <section class="cartao">
+            <h2>Bem-vindo, <span id="nomeCliente"></span>!</h2>
+            <p>Seu cadastro foi realizado com sucesso. Obrigado por se cadastrar.</p>
+            <p class="usuario">Guarde seu e-mail e sua senha: você vai precisar deles para entrar novamente.</p>
+        </section>
+    </main>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        async function verificarSessao() {
+            const resposta = await fetch("/sessao");
+            if (!resposta.ok) {
+                window.location.href = "/criptografia.html";
+                return;
+            }
+            const sessao = await resposta.json();
+            // Administrador não deve ficar nesta tela
+            if (sessao.papel === "admin") {
+                window.location.href = "/cadastro.html";
+                return;
+            }
+            $("emailLogado").textContent = sessao.email;
+            $("nomeCliente").textContent = sessao.nome || sessao.email;
+            document.body.classList.remove("oculto");
+        }
+
+        $("btnSair").addEventListener("click", async () => {
+            await fetch("/logout", { method: "POST" });
+            window.location.href = "/criptografia.html";
+        });
+
+        verificarSessao();
+    </script>
+</body>
+</html>
