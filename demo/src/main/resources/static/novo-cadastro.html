@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<!-- TELA PÚBLICA: CADASTRO DE CLIENTE (endereço: http://localhost:8081/novo-cadastro.html) -->
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Novo cadastro</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <header class="topo">
+        <strong>Arthur Martins Teixeira Coragem</strong>
+        <button type="button" class="secundario" id="btnVoltar">Voltar ao login</button>
+    </header>
+
+   <main class="conteudo conteudo-estreito">
+        <section class="cartao">
+            <h2>Novo cadastro</h2>
+
+            <form id="formCadastro">
+                <div class="grade">
+                    <div class="inteiro">
+                        <label for="nome">Nome completo *</label>
+                        <input id="nome" required maxlength="100">
+                    </div>
+                    <div class="inteiro">
+                        <label for="endereco">Endereço *</label>
+                        <input id="endereco" required maxlength="150" placeholder="Rua, bairro, cidade">
+                    </div>
+                    <div>
+                        <label for="cep">CEP *</label>
+                        <input id="cep" required maxlength="9" placeholder="00000-000" inputmode="numeric">
+                    </div>
+                    <div>
+                        <label for="numero">Número *</label>
+                        <input id="numero" required maxlength="10">
+                    </div>
+                    <div class="inteiro">
+                        <label for="telefone">Telefone *</label>
+                        <input id="telefone" required maxlength="20" placeholder="(31) 99999-9999" inputmode="tel">
+                    </div>
+                    <div class="inteiro">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao"></textarea>
+                    </div>
+                    <div>
+                        <label for="email">E-mail *</label>
+                        <input id="email" type="email" required maxlength="150">
+                    </div>
+                    <div>
+                        <label for="senha">Senha * (mín. 6)</label>
+                        <input id="senha" type="password" required minlength="6">
+                    </div>
+                </div>
+                <button type="submit" id="btnSalvar">Salvar cadastro</button>
+            </form>
+
+            <div id="msg" class="alerta"></div>
+        </section>
+    </main>
+
+    <script>
+        const $ = (id) => document.getElementById(id);
+
+        function mostrar(elemento, texto, tipo) {
+            elemento.textContent = texto;
+            elemento.className = "alerta " + tipo;
+        }
+
+        $("btnVoltar").addEventListener("click", () => {
+            window.location.href = "/criptografia.html";
+        });
+
+        // Máscara simples de CEP: 00000-000
+        $("cep").addEventListener("input", (e) => {
+            const d = e.target.value.replace(/\D/g, "").slice(0, 8);
+            e.target.value = d.length > 5 ? d.slice(0, 5) + "-" + d.slice(5) : d;
+        });
+
+        $("formCadastro").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const msg = $("msg");
+            msg.className = "alerta";
+            $("btnSalvar").disabled = true;
+
+            const dados = {
+                nome: $("nome").value,
+                endereco: $("endereco").value,
+                cep: $("cep").value,
+                numero: $("numero").value,
+                telefone: $("telefone").value,
+                observacao: $("observacao").value,
+                email: $("email").value,
+                senha: $("senha").value
+            };
+
+            try {
+                const resposta = await fetch("/cadastros", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(dados)
+                });
+                const corpo = await resposta.json();
+
+                if (resposta.ok) {
+                    mostrar(msg, "✔ Cadastro realizado com sucesso! Obrigado.", "sucesso");
+                    $("formCadastro").reset();
+                } else {
+                    mostrar(msg, corpo.erro || "Erro ao salvar.", "erro");
+                }
+            } catch {
+                mostrar(msg, "Não foi possível falar com o servidor.", "erro");
+            }
+            $("btnSalvar").disabled = false;
+        });
+    </script>
+</body>
+</html>
